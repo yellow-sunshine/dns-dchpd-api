@@ -50,9 +50,15 @@ class DhcpdController
         array_shift($leasesArray);
         $result = [];
         foreach ($leasesArray as $lease) {
+            /*
+            * Here we need to loop through each lease and extracting details with regex.
+            * View each regex pattern at the regex101.com url given in the comments.
+            */
+
             // Extract IP address - https://regex101.com/r/mJ4Tdc/1
             preg_match('/(\d+\.\d+\.\d+\.\d+)/', $lease, $ipMatches);
             $ip = isset($ipMatches[1]) ? $ipMatches[1] : null;
+
             // starts, ends, tstp, cltt  - https://regex101.com/r/DCZJAs/1
             preg_match('/starts (\d+ [\d\/]+ [\d:]+)/', $lease, $startsMatches);
             $starts = isset($startsMatches[1]) ? $startsMatches[1] : null;
@@ -62,10 +68,12 @@ class DhcpdController
             $tstp = isset($tstpMatches[1]) ? $tstpMatches[1] : null;
             preg_match('/cltt (\d+ [\d\/]+ [\d:]+)/', $lease, $clttMatches);
             $cltt = isset($clttMatches[1]) ? $clttMatches[1] : null;
+
             // Extract MAC address and vendor-class-identifier - https://regex101.com/r/gNZEfZ/1
             preg_match('/hardware ethernet (.*?);.*?set vendor-class-identifier = "(.*?)";/s', $lease, $matches);
             $mac = isset($matches[1]) ? $matches[1] : null;
             $vendorClassIdentifier = isset($matches[2]) ? $matches[2] : null;
+            
             // Create an array and keys for each lease
             $leaseInfo = [
                 'ip' => $ip,

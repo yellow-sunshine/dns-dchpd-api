@@ -12,6 +12,7 @@ require __DIR__ . '/vendor/autoload.php';
 $app = AppFactory::create();
 $app->addErrorMiddleware(true, true, true);
 
+# Default route, nothing really to show here excpet a nice message
 $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write("<h1>ns1.daha.us api</h1> For more information see <a href='//ncc.daha.us'>Network Control Console</a>");
     return $response;
