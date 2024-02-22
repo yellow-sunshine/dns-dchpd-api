@@ -30,18 +30,23 @@ class FlushBindDnsController
     }
     
     /**
-     * Executes the system command to flush the DNS cache using the "rndc" tool with sudo privileges.
-     * The command runs "sudo /usr/sbin/rndc flush" to initiate the DNS cache flushing process.
+     * Executes the rndc flush command to flush DNS cache and does so sudo privileges.
+     * For this to work properly, the www-data user must have the this command in the sudoers file..
      *
      * @return int  The exit status code of the executed command. A value of 0 indicates success,
      *              while non-zero values indicate an error or failure during the command execution.
      */
     private function executeflushDns(): int
     {
-        $command = 'sudo /usr/sbin/rndc flush';
-        $output = null;
-        $exitStatus = null;
-        exec($command, $output, $exitStatus);
-        return $exitStatus;
+        try {
+            $command = 'sudo /usr/sbin/rndc flush';
+            $output = null;
+            $exitStatus = null;
+            exec($command, $output, $exitStatus);
+            return $exitStatus;
+        } catch (Exception $e) {
+            // Handle the exception here, you can log or perform other actions as needed
+            return -1; // Or any other appropriate error code
+        }
     }
 }
